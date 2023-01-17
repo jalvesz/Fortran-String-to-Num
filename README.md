@@ -1,15 +1,15 @@
 # Fortran-String-to-Number
 
-This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in orther to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/faster-string-to-double/2208) in the fortran community. Which is still very much a work in progress.
+This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in order to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/faster-string-to-double/2208) in the fortran community. Which is still very much a work in progress.
 
 The original idea is kept in spirit: transform the string into integers, then to the final real value.
 
 ## Some of the limitations of the original implementation:
-* Requirement of the number to by fully contained in the string, limited to 32 characters.
+* Requirement of the number to be fully contained in the string, limited to 32 characters.
 * Not handling `NaN` or `Inf` values
-* Imposibility of stream-lining through several numbers contained in a single string (no information of the end point given by the function)
+* Imposibility of stream-lining through several numbers contained in a single string (no information of the end position in the string given by the function)
 
-This specific points are treated in the new implementation while boosting the performance (further testing is required).
+These specific points are treated in the new implementation while boosting the performance (further testing is required).
 
 ## Intended use cases:
 
