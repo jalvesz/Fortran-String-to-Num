@@ -1,5 +1,6 @@
 program test
-use str2real_m, only: str2real
+! use str2real_m, only: str2real
+use str2num_m, only: str2real, str2real_p, str2real_ch
 implicit none
 
 integer, parameter :: wp = kind(1.0d0)
@@ -15,6 +16,13 @@ call check("34.E1")
 call check("-34.5E1")
 call check("0.0021E10")
 call check("12.21e-1")
+call check("12.21e+001 ")
+call check("-1")
+call check( ' -0.2331726067853964E-01 ')
+call check(" 2.5647869e-003 "//char(13)//char(10))
+call check("Inf")
+call check("-Inf")
+call check("NaN")
 
 
 contains
@@ -38,7 +46,7 @@ abs_err = str2real_out - formatted_read_out
 rel_err = abs_err / formatted_read_out
 
 write(*,"('input          : ""' g0 '""')") s
-if(abs(rel_err) > 0) then
+if(abs(rel_err) > eps) then
     write(*,"('formatted read : ' g0)") formatted_read_out
     write(*,"('str2real       : ' g0)") str2real_out
 end if

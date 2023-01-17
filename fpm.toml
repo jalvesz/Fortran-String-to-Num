@@ -1,5 +1,5 @@
-name = "str2real"
-author = "Carl Burkert"
+name = "str2num"
+author = "José Alves"
 [build]
 auto-executables = true
 auto-tests = true
