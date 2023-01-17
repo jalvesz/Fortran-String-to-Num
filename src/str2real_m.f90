@@ -24,6 +24,11 @@ real(wp), parameter :: period_skip = 0d0
 real(wp), parameter :: base(*) = &
         [whole_number_base, period_skip, fractional_base]
 
+! Integer digits mask
+integer, private :: i
+integer(kind=ikind), parameter :: is_digit(-128:127) = &
+        [(merge(one,zero,i>=0 .and. i<=9),i=-128,127)]
+
 contains
 
 
@@ -56,11 +61,7 @@ exponent_loc = scan(s, 'eE', back=.true., kind=ikind)
 if(exponent_loc == 0) exponent_loc = ls + one
 if(period_loc   == 0) period_loc   = exponent_loc
 
-where (zero <= factors .and. factors <= nine)
-    mask = one
-elsewhere
-    mask = zero
-end where
+mask      = is_digit(factors)
 
 mask_from = 18_ikind - period_loc
 mask_till = mask_from + exponent_loc - 2_ikind
