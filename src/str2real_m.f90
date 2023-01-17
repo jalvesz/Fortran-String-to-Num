@@ -5,9 +5,13 @@ public :: str2real
 
 integer, parameter :: wp    = kind(1.0d0)
 integer, parameter :: ikind = selected_int_kind(2)
-integer(kind=ikind), parameter :: digit_0    = ichar('0')
-integer(kind=ikind), parameter :: period     = ichar('.') - digit_0
-integer(kind=ikind), parameter :: minus_sign = ichar('-') - digit_0
+
+integer(kind=ikind), parameter :: zero       = 0_ikind
+integer(kind=ikind), parameter :: one        = 1_ikind
+integer(kind=ikind), parameter :: nine       = 9_ikind
+integer(kind=ikind), parameter :: digit_0    = ichar('0',kind=ikind)
+integer(kind=ikind), parameter :: period     = ichar('.',kind=ikind) - digit_0
+integer(kind=ikind), parameter :: minus_sign = ichar('-',kind=ikind) - digit_0
 
 real(wp), parameter :: whole_number_base(*) =                    &
         [1d15,  1d14,  1d13,  1d12,  1d11,  1d10,  1d9,   1d8,   &
@@ -20,6 +24,11 @@ real(wp), parameter :: period_skip = 0d0
 real(wp), parameter :: base(*) = &
         [whole_number_base, period_skip, fractional_base]
 
+! Integer digits mask
+integer, private :: i
+integer(kind=ikind), parameter :: is_digit(-128:127) = &
+        [(merge(one,zero,i>=0 .and. i<=9),i=-128,127)]
+
 contains
 
 
@@ -31,43 +40,42 @@ real(wp) :: r
 real(wp) :: r_coefficient
 real(wp) :: r_exponent
 
-integer, parameter :: N = 32
+integer(kind=ikind), parameter :: N = 32_ikind
 character(N) :: factors_char
 integer(kind=ikind)    :: factors(N)
 integer(kind=ikind)    :: mask(N)
-integer      :: period_loc
-integer      :: exponent_loc
-integer      :: mask_from
-integer      :: mask_till
+integer(kind=ikind)    :: period_loc
+integer(kind=ikind)    :: exponent_loc
+integer(kind=ikind)    :: mask_from
+integer(kind=ikind)    :: mask_till
+integer(kind=ikind)    :: ls
 
 equivalence(factors, factors_char)
 factors_char = s
 factors = factors - digit_0
 
-period_loc   = findloc(factors, period, 1)
-exponent_loc = scan(s, 'eE', back=.true.)
-if(exponent_loc == 0) exponent_loc = len(s) + 1
+ls = len(s,kind=ikind)
+
+period_loc   = findloc(factors, period, dim=1, kind=ikind)
+exponent_loc = scan(s, 'eE', back=.true., kind=ikind)
+if(exponent_loc == 0) exponent_loc = ls + one
 if(period_loc   == 0) period_loc   = exponent_loc
 
-where (0 <= factors .and. factors <= 9)
-    mask = 1
-elsewhere
-    mask = 0
-end where
+mask      = is_digit(factors)
 
-mask_from = 18 - period_loc
-mask_till = mask_from + exponent_loc - 2
+mask_from = 18_ikind - period_loc
+mask_till = mask_from + exponent_loc - 2_ikind
 
 r_coefficient = sum( &
-        factors(:exponent_loc - 1)  * &
+        factors(:exponent_loc - one)  * &
         base(mask_from:mask_till) * &
-        mask(:exponent_loc - 1))
+        mask(:exponent_loc - one))
 r_exponent = sum( &
-        factors(exponent_loc+1:len(s)) * &
-        mask(exponent_loc+1:len(s))  * &
-        base(17-(len(s)-exponent_loc):16))
-if(factors(exponent_loc+1) == minus_sign) r_exponent    = -r_exponent
-if(factors(1)              == minus_sign) r_coefficient = -r_coefficient
+        factors(exponent_loc+one:ls) * &
+        mask(exponent_loc+one:ls)  * &
+        base(17_ikind-(ls-exponent_loc):16_ikind))
+if(factors(exponent_loc+one) == minus_sign) r_exponent    = -r_exponent
+if(factors(one)              == minus_sign) r_coefficient = -r_coefficient
 r = r_coefficient * 10 ** r_exponent
 end function str2real
 

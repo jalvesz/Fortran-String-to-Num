@@ -46,7 +46,7 @@ abs_err = str2real_out - formatted_read_out
 rel_err = abs_err / formatted_read_out
 
 write(*,"('input          : ""' g0 '""')") s
-if(abs(rel_err) > eps) then
+if(abs(rel_err) > epsilon(0.0_wp)) then
     write(*,"('formatted read : ' g0)") formatted_read_out
     write(*,"('str2real       : ' g0)") str2real_out
 end if
