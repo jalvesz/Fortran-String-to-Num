@@ -64,6 +64,7 @@ Latests test show this implemantation is about 20 times faster than the standard
 ### benchmark execution time:
 
 `fpm test bench --profile release --flag "-flto"`
+
 `fpm test main_test --profile release --flag "-flto"`
 ## Footnote
 
