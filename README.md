@@ -1,6 +1,6 @@
 # Fortran-String-to-Number
 
-This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in orther to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/a-new-json-library/2197/20 in the fortran community. Which is still very much a work in progress.
+This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in orther to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/a-new-json-library/2197/20) in the fortran community. Which is still very much a work in progress.
 
 The original idea is kept in spirit: transform the string into integers, then to the final real value.
 
