@@ -1,6 +1,6 @@
 # Fortran-String-to-Number
 
-This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in orther to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/a-new-json-library/2197/20) in the fortran community. Which is still very much a work in progress.
+This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in orther to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/faster-string-to-double/2208) in the fortran community. Which is still very much a work in progress.
 
 The original idea is kept in spirit: transform the string into integers, then to the final real value.
 
@@ -20,7 +20,7 @@ real(8) :: r
 r = str2real("1.234")
 r = str2real(" -0.2331726067853964E-01 ")
 ```
-* Interpreting an array of string:
+* Interpreting an array of strings:
 ```fortran
 use str2num_m, only: str2real
 real(8), allocatable :: r(:)
@@ -55,7 +55,7 @@ enddo
 This library comes with a test for correctness and a benchmark for execution time. The benchmark only contains one format, the speedup will be different for shorter/other formats.
 All tests are a comparison between formatted `read` and `str2real`
 
-Latests test show this implemantation is about 20 times faster than the standard read. (compiler and hardward dependent)
+Latest test show this implemantation is about 20 times faster than the standard read. (compiler and hardward dependent)
 
 ### test correctness:
 
