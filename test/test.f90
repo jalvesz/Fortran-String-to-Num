@@ -1,6 +1,5 @@
 program test
-! use str2real_m, only: str2real
-use str2num_m, only: str2real, str2real_p, str2real_ch
+use str2num_m, only: str2real
 implicit none
 
 integer, parameter :: wp = kind(1.0d0)

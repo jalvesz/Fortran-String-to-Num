@@ -1,7 +1,7 @@
 program bench
 
 use iso_fortran_env, only: wp => real64, ip => int64
-use str2real_m, only: str2real
+use str2num_m, only: str2real
 
 implicit none
 
