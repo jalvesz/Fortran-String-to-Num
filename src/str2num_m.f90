@@ -1,5 +1,5 @@
 module str2num_m
-    use, intrinsic :: ieee_arithmetic, only: IEEE_Value, IEEE_QUIET_NAN
+    use iso_c_binding 
     implicit none
     private
     public :: str2real, str2real_p, str2int, str2int_p
@@ -16,6 +16,8 @@ module str2num_m
     integer(kind=ikind), parameter :: BE         = ichar('E',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: LF = 10, CR = 13, WS = 32
     
+    real(c_double), parameter :: rNaN = TRANSFER(9218868437227405313_c_int64_t, 1._c_double)
+
     real(wp), parameter :: whole_number_base(16) =                   &
             [1d15,  1d14,  1d13,  1d12,  1d11,  1d10,  1d9,   1d8,   &
              1d7,   1d6,   1d5,   1d4,   1d3,   1d2,   1d1,   1d0]
@@ -107,7 +109,7 @@ module str2num_m
         if( iachar(s(p:p)) == Inf ) then
             r = sign*huge(1.0); return
         else if( iachar(s(p:p)) == NaN ) then
-            r = IEEE_VALUE(1.d0, IEEE_QUIET_NAN); return
+            r = rNaN; return
         end if
         !----------------------------------------------
         ! read leading whole number
