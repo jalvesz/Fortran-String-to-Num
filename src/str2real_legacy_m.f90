@@ -45,7 +45,7 @@ module str2real_m
         end function
         
         elemental function str2real(s) result(r)
-            !< Fonction by @Carltoffel and further modified by @hkvzjal
+            !< Function by @Carltoffel and further modified by @hkvzjal
             character(*), intent(in) :: s
             real(wp) :: r
             integer, parameter :: N = 32
@@ -83,7 +83,7 @@ module str2real_m
         end function
         
         function str2real_c(s) result(r)
-            !< Original fonction by @Carltoffel 
+            !< Original function by @Carltoffel 
             character(*), intent(in) :: s
             real(wp) :: r
         
