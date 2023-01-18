@@ -35,7 +35,7 @@ module str2num_m
         character(*), intent(in) :: s !< input string
         integer, intent(inout)  :: int !< Output real value
         integer(1), intent(out)  :: p !< position within the number
-        integer(1), intent(out)  :: stat !< status upon succes of failure to read
+        integer(1), intent(out)  :: stat !< status upon success or failure to read
         ! -- Internal Variables
         integer(1)  :: val 
         !----------------------------------------------
@@ -87,7 +87,7 @@ module str2num_m
         character(*), intent(in) :: s !< input string
         real(wp), intent(inout)  :: r !< Output real value
         integer(1), intent(out)  :: p !< position within the number
-        integer(1), intent(out)  :: stat !< status upon succes of failure to read
+        integer(1), intent(out)  :: stat !< status upon success or failure to read
         ! -- Internal Variables
         integer(1)  :: sign, sige !< sign of integer number and exponential
         integer     :: int_4  !< integer to capture whole number part
