@@ -110,10 +110,9 @@ module str2num_m
         integer(1) :: p !< position within the number
         integer(1) :: stat ! error status
         !----------------------------------------------
-        call str2real_unroll2(s,r,p,stat)
-        !call str2real_unroll(s,r,p,stat)
-        !call str2real_eqvmask(s,r,p,err)
-        !call str2real_aqv(s,r,p,err)
+        call str2real_unroll(s,r,p,stat)
+        !call str2real_eqvmask(s,r,p,stat)
+        !call str2real_aqv(s,r,p,stat)
     end function
     
     function str2real_p(s,stat) result(r)
@@ -125,8 +124,7 @@ module str2num_m
         integer(1) :: p !< position within the number
         integer(1) :: err
         !----------------------------------------------
-        call str2real_unroll2(s,r,p,stat)
-        !call str2real_unroll(s,r,p,err)
+        call str2real_unroll(s,r,p,err)
         !call str2real_eqvmask(s,r,p,err)
         !call str2real_aqv(s,r,p,err)
         p = min( p , len(s) )
@@ -147,105 +145,14 @@ module str2num_m
         integer(1), intent(out)  :: stat !< status upon success or failure to read
         ! -- Internal Variables
         integer(1)  :: sign, sige !< sign of integer number and exponential
-        integer     :: int_4, i_exp !< integer to capture whole number part
-        integer(wp) :: int_wp !< long integer to capture fractional part
-        integer(1)  :: pP, val 
-        !----------------------------------------------
-        stat = 23 !> initialize error status with any number > 0
-        !----------------------------------------------
-        ! Find first non white space
-        p = mvs2nwsp(s)
-        !----------------------------------------------
-        ! Verify leading negative
-        sign = 1
-        if( iachar(s(p:p)) == minus_sign+digit_0 ) then
-            sign = -1 ; p = p + 1
-        end if
-        if( iachar(s(p:p)) == Inf ) then
-            r = sign*huge(1.0); return
-        else if( iachar(s(p:p)) == NaN ) then
-            r = rNaN; return
-        end if
-        !----------------------------------------------
-        ! read leading whole number
-        int_4 = 0
-        do while( p<=len(s) )
-            val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
-                int_4 = int_4*10 + val ; p = p + 1
-            else
-                exit
-            end if
-        end do
-        if( p>=len(s)) then
-            r = sign*int_4; goto 10
-        end if
-        !----------------------------------------------
-        ! Verify period
-        pP = p
-        if( iachar(s(p:p)) == period+digit_0 ) then
-            pP = p ; p = p + 1
-        end if
-        !----------------------------------------------
-        ! read fractional number
-        int_wp = 0
-        do while( p<=len(s) )
-            val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
-                int_wp = int_wp*10 + val ; p = p + 1
-            else
-                exit
-            end if
-        end do
-        r = 0
-        if(p>pP+1) r = int_wp*fractional_base(p-pP-1)
-        r = sign*(r+int_4)
-        !----------------------------------------------
-        ! Get exponential
-        if( p>=len(s)) then
-            goto 10
-        else if( iachar(s(p:p)) == le+digit_0 .or. iachar(s(p:p)) == BE+digit_0 ) then
-            p = p + 1
-        end if
-        
-        sige = 1
-        if( iachar(s(p:p)) == minus_sign+digit_0 ) then
-            sige = -1
-            p = p + 1
-        else if( iachar(s(p:p)) == plus_sign+digit_0 ) then
-            p = p + 1
-        end if
-        
-    10  i_exp = 0
-        do while( p<=len(s) )
-            val = iachar(s(p:p))-digit_0
-            if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10 + val ; p = p + 1
-            else
-                exit
-            end if
-        end do
-        
-        if(i_exp.ne.0) r = r * expbase(16-sige*i_exp)
-        stat = 0
-    end subroutine
-    
-    elemental subroutine str2real_unroll2(s,r,p,stat)
-        !< Sequentially unroll the character and get the sub integers composing the whole number, fraction and exponent
-        ! -- In/out Variables
-        character(*), intent(in) :: s !< input string
-        real(wp), intent(inout)  :: r !< Output real value
-        integer(1), intent(out)  :: p !< last position within the string
-        integer(1), intent(out)  :: stat !< status upon success or failure to read
-        ! -- Internal Variables
-        integer(1)  :: sign, sige !< sign of integer number and exponential
         integer(wp) :: int_wp !< long integer to capture fractional part
         integer     :: i_exp !< integer to capture whole number part
         integer(1)  :: pP, pE, val 
         !----------------------------------------------
+        stat = 23 !> initialize error status with any number > 0
+        !----------------------------------------------
         ! Find first non white space
         p = mvs2nwsp(s)
-        stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
         ! Verify leading negative
         sign = 1
