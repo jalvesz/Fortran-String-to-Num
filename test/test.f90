@@ -20,11 +20,13 @@ call check("-1")
 call check( ' -0.23317260678539647E-01 ')
 call check(" 2.5647869e-003 "//char(13)//char(10))
 call check("1.-3")
-! call check("0.123456789123456789123456789123456789") ! not handled for the moment
 call check("Inf")
 call check("-Inf")
 call check("NaN")
-
+call check("0.123456789123456789123456789123456789")
+! call check("1234567890123456789012345678901234567890-9") 
+!!! not handled for the moment: str2real gives back 1.234567890123457
+!!! intel and gfortran gives back .1234567890123457E+31
 
 contains
 

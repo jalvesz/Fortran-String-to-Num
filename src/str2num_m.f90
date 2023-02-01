@@ -21,15 +21,17 @@ module str2num_m
     
     real(c_double), parameter :: rNaN = TRANSFER(9218868437227405313_c_int64_t, 1._c_double)
     
-    real(wp), parameter :: whole_number_base(16) =                   &
-            [1d15,  1d14,  1d13,  1d12,  1d11,  1d10,  1d9,   1d8,   &
-             1d7,   1d6,   1d5,   1d4,   1d3,   1d2,   1d1,   1d0]
-    real(wp), parameter :: fractional_base(40)   =                   &
-            [1d-1,  1d-2,  1d-3,  1d-4,  1d-5,  1d-6,  1d-7,  1d-8,  &
-             1d-9,  1d-10, 1d-11, 1d-12, 1d-13, 1d-14, 1d-15, 1d-16, &
-             1d-17, 1d-18, 1d-19, 1d-20, 1d-21, 1d-22, 1d-23, 1d-24, &
-             1d-25, 1d-26, 1d-27, 1d-28, 1d-29, 1d-30, 1d-31, 1d-32, &
-             1d-33, 1d-34, 1d-35, 1d-36, 1d-37, 1d-38, 1d-39, 1d-40 ]
+    integer(kind=ikind), parameter :: nwnb = 16 !< number of whole number factors
+    integer(kind=ikind), parameter :: nfnb = 40 !< number of fractional number factors
+    real(wp), parameter :: whole_number_base(nwnb) =                 &
+        [1d15,  1d14,  1d13,  1d12,  1d11,  1d10,  1d9,   1d8,   &
+         1d7,   1d6,   1d5,   1d4,   1d3,   1d2,   1d1,   1d0]
+    real(wp), parameter :: fractional_base(nfnb)   =                 &
+        [1d-1,  1d-2,  1d-3,  1d-4,  1d-5,  1d-6,  1d-7,  1d-8,  &
+         1d-9,  1d-10, 1d-11, 1d-12, 1d-13, 1d-14, 1d-15, 1d-16, &
+         1d-17, 1d-18, 1d-19, 1d-20, 1d-21, 1d-22, 1d-23, 1d-24, &
+         1d-25, 1d-26, 1d-27, 1d-28, 1d-29, 1d-30, 1d-31, 1d-32, &
+         1d-33, 1d-34, 1d-35, 1d-36, 1d-37, 1d-38, 1d-39, 1d-40 ]
     real(wp), parameter :: period_skip = 0d0
     real(wp), parameter :: base(57)    = [whole_number_base, period_skip, fractional_base]
     real(wp), parameter :: expbase(56) = [whole_number_base, fractional_base]
@@ -147,7 +149,7 @@ module str2num_m
         integer(1)  :: sign, sige !< sign of integer number and exponential
         integer(wp) :: int_wp !< long integer to capture fractional part
         integer     :: i_exp !< integer to capture whole number part
-        integer(1)  :: pP, pE, val 
+        integer(1)  :: i, pP, pE, val 
         !----------------------------------------------
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
@@ -160,7 +162,7 @@ module str2num_m
             sign = -1 ; p = p + 1
         end if
         if( iachar(s(p:p)) == Inf ) then
-            r = sign*huge(1.d0); return
+            r = sign*huge(1_wp); return
         else if( iachar(s(p:p)) == NaN ) then
             r = rNaN; return
         end if
@@ -168,17 +170,17 @@ module str2num_m
         ! read whole and fractional number in a single integer
         pP = p
         int_wp = 0
-        do while( p<=len(s) )
-            val = iachar(s(p:p))-digit_0
-            if( (val >= 0 .and. val <= 9) ) then
+        do i = p, min(19+p-1,len(s))
+            val = iachar(s(i:i))-digit_0
+            if( val >= 0 .and. val <= 9 ) then
                 int_wp = int_wp*10 + val
             else if( val == period ) then
-                pP = p
+                pP = i
             else
                 exit
             end if
-            p = p + 1
         end do
+        p = i
         !----------------------------------------------
         ! Get exponential
         sige = 1; pE = p
@@ -196,13 +198,13 @@ module str2num_m
         do while( p<=len(s) )
             val = iachar(s(p:p))-digit_0
             if( val >= 0 .and. val <= 9) then
-                i_exp = i_exp*10 + val ; p = p + 1
+                i_exp = i_exp*10_ikind + val ; p = p + 1
             else
                 exit
             end if
         end do
         
-        r = sign*int_wp*expbase(15+pE-pP-sige*i_exp)
+        r = sign*int_wp*expbase(nwnb-1+pE-pP-sige*max(0,i_exp))
         stat = 0
     end subroutine
     
