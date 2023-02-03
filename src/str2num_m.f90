@@ -11,12 +11,15 @@ module str2num_m
     integer(kind=ikind), parameter :: nine       = 9_ikind
     integer(kind=ikind), parameter :: digit_0    = ichar('0',kind=ikind)
     integer(kind=ikind), parameter :: period     = ichar('.',kind=ikind) - digit_0
+    integer(kind=ikind), parameter :: comma      = ichar(',',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: minus_sign = ichar('-',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: plus_sign  = ichar('+',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: Inf        = ichar('I',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: NaN        = ichar('N',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: le         = ichar('e',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: BE         = ichar('E',kind=ikind) - digit_0
+    integer(kind=ikind), parameter :: ld         = ichar('d',kind=ikind) - digit_0
+    integer(kind=ikind), parameter :: BD         = ichar('D',kind=ikind) - digit_0
     integer(kind=ikind), parameter :: LF = 10, CR = 13, WS = 32
     
     real(c_double), parameter :: rNaN = TRANSFER(9218868437227405313_c_int64_t, 1._c_double)
@@ -185,7 +188,7 @@ module str2num_m
         ! Get exponential
         sige = 1; pE = p
         if( p<len(s) ) then
-            if( iachar(s(p:p)) == le+digit_0 .or. iachar(s(p:p)) == BE+digit_0 ) p = p + 1
+            if( any([le,BE,ld,BD]+digit_0==iachar(s(p:p))) ) p = p + 1
             if( iachar(s(p:p)) == minus_sign+digit_0 ) then
                 sige = -1
                 p = p + 1
