@@ -152,7 +152,7 @@ module str2num_m
         integer(1)  :: sign, sige !< sign of integer number and exponential
         integer(wp) :: int_wp !< long integer to capture fractional part
         integer     :: i_exp !< integer to capture whole number part
-        integer(1)  :: i, pP, pE, val 
+        integer(1)  :: i, pP, pE, val , resp
         !----------------------------------------------
         stat = 23 !> initialize error status with any number > 0
         !----------------------------------------------
@@ -183,10 +183,18 @@ module str2num_m
                 exit
             end if
         end do
+        pE = i
+        do while( i<=len(s) )
+           val = iachar(s(i:i))-digit_0
+           if( val < 0 .or. val > 9 ) exit
+           i = i + 1
+        end do
         p = i
+        resp = pE-pP 
+        if( resp >= 19 ) resp = p-pP-4
         !----------------------------------------------
         ! Get exponential
-        sige = 1; pE = p
+        sige = 1
         if( p<len(s) ) then
             if( any([le,BE,ld,BD]+digit_0==iachar(s(p:p))) ) p = p + 1
             if( iachar(s(p:p)) == minus_sign+digit_0 ) then
@@ -206,8 +214,8 @@ module str2num_m
                 exit
             end if
         end do
-        
-        r = sign*int_wp*expbase(nwnb-1+pE-pP-sige*max(0,i_exp))
+
+        r = sign*int_wp*expbase(nwnb-1+resp-sige*max(0,i_exp))
         stat = 0
     end subroutine
     

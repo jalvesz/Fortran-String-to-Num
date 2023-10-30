@@ -1,15 +1,11 @@
-# Fortran-String-to-Number
+# Fortran String to Number
 
-This is a forked project from [Fortran-String-to-Real](https://github.com/Carltoffel/Fortran-String-to-Real) in order to try some further improvements on the ASCII to numerical data conversion capabilities of Fortran following the [discussions](https://fortran-lang.discourse.group/t/faster-string-to-double/2208) in the fortran community. Which is still very much a work in progress.
+This is an initiative in order improvement string to number conversion of Fortran following the [discussions](https://fortran-lang.discourse.group/t/faster-string-to-double/2208) in the fortran community. Which is still very much a work in progress.
 
-The original idea is kept in spirit: transform the string into integers, then to the final real value.
-
-## Some of the limitations of the original implementation:
-* Requirement of the number to be fully contained in the string, limited to 32 characters.
-* Not handling `NaN` or `Inf` values
-* Imposibility of stream-lining through several numbers contained in a single string (no information of the end position in the string given by the function)
-
-These specific points are treated in the new implementation while boosting the performance (further testing is required).
+The key elements are:
+* Transforming the individual strings into its ASCII code integer equivalent.
+* Add up the values respecting their respective power of 10th position.
+* For float numbers: determine the positions of the decimal place marker and exponent caracters.
 
 ## Intended use cases:
 
@@ -63,12 +59,10 @@ Latest test show this implemantation is about 20 times faster than the standard 
 
 ### benchmark execution time:
 
-`fpm test bench --profile release --flag "-flto"`
+`fpm test bench --flag "-O3 -march=native"`
 
-`fpm test main_test --profile release --flag "-flto"`
+`fpm test main_test --flag "-O3 -march=native"`
 ## Footnote
-
-There is an ongoing discussion on this topic in the [Fortran-Discourse](https://fortran-lang.discourse.group/t/faster-string-to-double/2208)
 
 Authors of the original project [Carl Burkert](https://github.com/Carltoffel)
 and collaborators: [Jacob Williams](https://github.com/jacobwilliams) and [Beliavsky](https://github.com/Beliavsky)
