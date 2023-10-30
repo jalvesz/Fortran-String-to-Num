@@ -24,10 +24,13 @@ module str2num_m
     
     real(c_double), parameter :: rNaN = TRANSFER(9218868437227405313_c_int64_t, 1._c_double)
     
-    integer(kind=ikind), parameter :: nwnb = 16 !< number of whole number factors
+    integer(kind=ikind), parameter :: nwnb = 40 !< number of whole number factors
     integer(kind=ikind), parameter :: nfnb = 40 !< number of fractional number factors
-    real(wp), parameter :: whole_number_base(nwnb) =                 &
-        [1d15,  1d14,  1d13,  1d12,  1d11,  1d10,  1d9,   1d8,   &
+    real(wp), parameter :: whole_number_base(nwnb) =             &
+        [1d39,  1d38,  1d37,  1d36,  1d35,  1d34, 1d33,  1d32,   & 
+         1d31,  1d30,  1d29,  1d28,  1d27,  1d26, 1d25,  1d24,   &
+         1d23,  1d22,  1d21,  1d20,  1d19,  1d18, 1d17,  1d16,   &
+         1d15,  1d14,  1d13,  1d12,  1d11,  1d10,  1d9,   1d8,   &
          1d7,   1d6,   1d5,   1d4,   1d3,   1d2,   1d1,   1d0]
     real(wp), parameter :: fractional_base(nfnb)   =                 &
         [1d-1,  1d-2,  1d-3,  1d-4,  1d-5,  1d-6,  1d-7,  1d-8,  &
@@ -36,14 +39,9 @@ module str2num_m
          1d-25, 1d-26, 1d-27, 1d-28, 1d-29, 1d-30, 1d-31, 1d-32, &
          1d-33, 1d-34, 1d-35, 1d-36, 1d-37, 1d-38, 1d-39, 1d-40 ]
     real(wp), parameter :: period_skip = 0d0
-    real(wp), parameter :: base(57)    = [whole_number_base, period_skip, fractional_base]
-    real(wp), parameter :: expbase(56) = [whole_number_base, fractional_base]
-    
-    ! Integer digits mask
-    !integer, private :: i
-    !integer(kind=ikind), parameter :: is_digit(-128:127) = &
-    !        [(merge(one,zero,i>=0 .and. i<=9),i=-128,127)] !< ifort 19 error #6211: A symbol must be a defined parameter in this context.   [I]
-    
+    real(wp), parameter :: base(nwnb+nfnb+1)  = [whole_number_base, period_skip, fractional_base]
+    real(wp), parameter :: expbase(nwnb+nfnb) = [whole_number_base, fractional_base]
+
     contains
     
     !---------------------------------------------
