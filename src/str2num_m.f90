@@ -171,7 +171,7 @@ module str2num_m
         end if
         !----------------------------------------------
         ! read whole and fractional number in a single integer
-        pP = p
+        pP = 127
         int_wp = 0
         do i = p, min(19+p-1,len(s))
             val = iachar(s(i:i))-digit_0
@@ -190,8 +190,8 @@ module str2num_m
            i = i + 1
         end do
         p = i
-        resp = pE-pP 
-        if( resp >= 19 ) resp = p-pP-4
+        resp = pE-min(pP,p)
+        if( resp <= 0 ) resp = resp+1 
         !----------------------------------------------
         ! Get exponential
         sige = 1
