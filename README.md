@@ -30,14 +30,14 @@ rval(:) = str2real ( strs(:) )
 ```
 * stream-lining through a chain of numbers in one string:
 ```fortran
-use str2num_m, only: str2real_p !< pointer version of the str2real function
-character(:),allocatable,target :: strs_seq !< Original string
-character(len=:), pointer :: ps !< Working pointer
+use str2num_m, only: str2real_p !> pointer version of the str2real function
+character(:),allocatable,target :: strs_seq !> Original string
+character(len=:), pointer :: ps !> Working pointer
 real(8), allocatable :: r(:)
 ...
 ps => strs_seq(1:)
 do i = 1, n
-   rval(i) = str2real_p ( ps ) !< the pointer is shifted within the function
+   rval(i) = str2real_p ( ps ) !> the pointer is shifted within the function
 enddo
 ! OR
 do i = 1, n

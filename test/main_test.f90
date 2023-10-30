@@ -9,7 +9,7 @@ program main_test
        integer,parameter :: n = 1000000 !! number of values 
     !  
        character(len=30),dimension(:),allocatable,target :: strs
-       character(:),allocatable,target :: strs_seq !< Copy of integers but in a sequential manner
+       character(:),allocatable,target :: strs_seq !> Copy of integers but in a sequential manner
        real(dp),dimension(:),allocatable :: rval, rref 
     !
        integer :: i, i0 
