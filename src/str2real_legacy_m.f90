@@ -1,4 +1,102 @@
-! Legacy module containing some of the implemantations discussed in the fortran forum
+! Legacy file containing some of the implemantations discussed in the fortran forum
+
+!! elemental subroutine str2real_eqv(s,r,p,stat)
+!!    !< use equivalence to iterate over an array of integers instead of interpreting the string
+!!    ! -- In/out Variables
+!!    character(*), intent(in) :: s !< input string
+!!    real(wp), intent(inout)  :: r !< Output real value
+!!    integer(1), intent(out)  :: p !< last position within the string
+!!    integer(1), intent(out)  :: stat !< status upon success or failure to read
+!!    ! -- Internal Variables
+!!    integer, parameter :: N = 32_ikind
+!!    character(N) :: factors_char
+!!    integer(kind=ikind) :: factors(N)
+!!    integer      :: period_loc
+!!    integer      :: exponent_loc
+!!    intrinsic    :: findloc, scan
+!!    integer      :: findloc, scan
+!!    integer(1)   :: sig_coef, sig_exp
+!!    integer      :: i_exponent, val
+!! 
+!!    equivalence(factors, factors_char)
+!!    !----------------------------------------------
+!!    factors_char = s
+!!    factors = factors - digit_0
+!! 
+!!    exponent_loc = scan(s, 'eE', back=.true.)
+!!    if(exponent_loc == 0) exponent_loc = len(s) + 1
+!!    period_loc   = findloc(factors, period, 1)
+!!    if(period_loc   == 0) period_loc   = exponent_loc
+!! 
+!!    sig_exp = 1
+!!    if(factors(exponent_loc+1) == minus_sign) sig_exp = -1
+!! 
+!!    sig_coef = 1
+!!    if(factors(1)== minus_sign) sig_coef = -1
+!! 
+!!    val = str2int( s(1:period_loc-1) )
+!!    r = sum( factors(period_loc+1:exponent_loc-1)*fractional_base(1:exponent_loc-period_loc-1) )
+!!    r = sig_coef*(r+val)
+!! 
+!!    i_exponent = str2int( s(exponent_loc+1:len(s)) )
+!!    if(i_exponent.ne.0) r = r * expbase(16-sig_exp*i_exponent)
+!! end subroutine
+
+!! elemental subroutine str2real_eqvmask(s,r,p,stat)
+!!    !< use equivalence together with a mask in order to hide non-numeric values
+!!    ! -- In/out Variables
+!!    character(*), intent(in) :: s !< input string
+!!    real(wp), intent(inout)  :: r !< Output real value
+!!    integer(1), intent(out)  :: p !< last position within the string
+!!    integer(1), intent(out)  :: stat !< status upon success or failure to read
+!!    ! -- Internal Variables
+!!    real(wp) :: r_coefficient
+!!    real(wp) :: r_exponent
+!! 
+!!    integer(kind=ikind), parameter :: N = 32_ikind
+!!    character(N) :: factors_char
+!!    integer(kind=ikind)    :: factors(N)
+!!    integer(kind=ikind)    :: mask(N)
+!!    integer(kind=ikind)    :: period_loc
+!!    integer(kind=ikind)    :: exponent_loc
+!!    integer(kind=ikind)    :: mask_from
+!!    integer(kind=ikind)    :: mask_till
+!!    integer(kind=ikind)    :: ls
+!! 
+!!    equivalence(factors, factors_char)
+!!    !----------------------------------------------
+!!    factors_char = s
+!!    factors = factors - digit_0
+!! 
+!!    ls = len(s,kind=ikind)
+!! 
+!!    period_loc   = findloc(factors, period, dim=1, kind=ikind)
+!!    exponent_loc = scan(s, 'eE', back=.true., kind=ikind)
+!!    if(exponent_loc == 0) exponent_loc = ls + one
+!!    if(period_loc   == 0) period_loc   = exponent_loc
+!! 
+!!    ! mask      = is_digit(factors)
+!!    where (0 <= factors .and. factors <= 9)
+!!       mask = 1
+!!    elsewhere
+!!       mask = 0
+!!    end where
+!! 
+!!    mask_from = 18_ikind - period_loc
+!!    mask_till = mask_from + exponent_loc - 2_ikind
+!! 
+!!    r_coefficient = sum( &
+!!          factors(:exponent_loc - one)  * &
+!!          base(mask_from:mask_till) * &
+!!          mask(:exponent_loc - one))
+!!    r_exponent = sum( &
+!!          factors(exponent_loc+one:ls) * &
+!!          mask(exponent_loc+one:ls)  * &
+!!          base(17_ikind-(ls-exponent_loc):16_ikind))
+!!    if(factors(exponent_loc+one) == minus_sign) r_exponent    = -r_exponent
+!!    if(factors(one)              == minus_sign) r_coefficient = -r_coefficient
+!!    r = r_coefficient * 10 ** r_exponent
+!! end subroutine str2real_eqvmask
 module mod_st_to_dp
         !
            use, intrinsic :: iso_c_binding,   only: c_double, c_char, c_ptr, &
